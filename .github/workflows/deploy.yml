@@ -22,7 +22,7 @@ jobs:
       ## gradle build
       - name: Build with Gradle
         run: ./gradlew clean build --debug
-     ## 이미지 태그에 시간 설정을 하기위해서 현재 시간을 가져옵니다. 
+     ## 이미지 태그에 시간 설정을 하기위해서 현재 시간(current-time)을 가져옵니다. 이후 이를 steps.current-time.outputs.formattedTime로 사용합니다.  
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time
@@ -33,7 +33,6 @@ jobs:
       # 현재 시간을 출력
       - name: Show Current Time
         run: echo "CurrentTime=${{steps.current-time.outputs.formattedTime}}"
-
 
       # 현재 시간을 파일에 기록
       - name: Save current time to a file
@@ -53,11 +52,12 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
+          
       ## ECR에 로그인합니다
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-      ## sample라는 ECR 리파지터리에 현재 시간 태그를 생성하고, 푸쉬합니다. xxx부분은 본인의 레파지터리 주소입니다.
+      
       ## 앞의 스탭에서 ${{steps.current-time.outputs.formattedTime}}로 현재 시간을 가져옵니다.
       - name: Build, tag, and push image to Amazon ECR
         run: |
@@ -65,7 +65,7 @@ jobs:
           docker tag sample:${{steps.current-time.outputs.formattedTime}} 009946608368.dkr.ecr.ap-northeast-2.amazonaws.com/awsmarket:${{steps.current-time.outputs.formattedTime}}
           docker push 009946608368.dkr.ecr.ap-northeast-2.amazonaws.com/awsmarket:${{steps.current-time.outputs.formattedTime}}
 
-          
+  # CD 수행 부분        
   update-helm-chart:
     needs: build-and-push-image
     runs-on: ubuntu-latest
@@ -93,7 +93,6 @@ jobs:
           IMAGE_TAG: $IMAGE_TAG
         run: |
           sed -i 's/tag: .*/tag: ${IMAGE_TAG}/' ./values.yaml
-
 
 
       - name: Commit and push changes
