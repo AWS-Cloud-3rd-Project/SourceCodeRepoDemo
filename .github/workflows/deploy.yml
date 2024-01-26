@@ -84,17 +84,16 @@ jobs:
 
       # 아티팩트에서 현재 시간 읽기
       - name: Read current time from artifact
-        run: IMAGE_TAG=$(cat artifact/current-time.txt)
+        id: read-time
+        run: echo "IMAGE_TAG=$(cat artifact/current-time.txt)" >> $GITHUB_ENV
 
 
       # 헬름 차트 수정
       - name: Update Helm chart values
-        env:
-          IMAGE_TAG: $IMAGE_TAG
         run: |
-          sed -i 's/tag: .*/tag: ${IMAGE_TAG}/' ./values.yaml
+          sed -i "s/tag: .*/tag: ${{ env.IMAGE_TAG }}/" ./values.yaml
 
-
+      # 변경 사항 커밋 및 푸쉬
       - name: Commit and push changes
         run: |
           git config --global user.email "qqw7820@gmail.com"
