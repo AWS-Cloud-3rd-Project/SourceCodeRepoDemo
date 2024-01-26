@@ -99,6 +99,6 @@ jobs:
         run: |
           git config --global user.email "qqw7820@gmail.com"
           git config --global user.name "Vinca0121"
-          git values.yaml
+          git add values.yaml
           git commit -m "Update image tag to latest"
           git push
