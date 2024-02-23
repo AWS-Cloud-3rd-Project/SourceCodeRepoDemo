@@ -6,23 +6,30 @@ on:
 
 jobs:
   build-and-push-image:
-    ## checkout후 자바 17 버전으로 설정을 합니다
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
-      ## gradlew 의 권한을 줍니다.
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-       
+
+      # application.properties 파일 내의 변수를 GitHub Secrets 값으로 대체합니다.
+      - name: Replace environment variables in application.properties
+        run: |
+          sed -i 's|\${DB_URL}|${{ secrets.DB_URL }}|g' src/main/resources/application.properties
+          sed -i 's|\${DB_USER_NAME}|${{ secrets.DB_USER_NAME }}|g' src/main/resources/application.properties
+          sed -i 's|\${DB_PASSWORD}|${{ secrets.DB_PASSWORD }}|g' src/main/resources/application.properties
+
       ## gradle build
       - name: Build with Gradle
         run: ./gradlew clean build --debug
-     ## 이미지 태그에 시간 설정을 하기위해서 현재 시간(current-time)을 가져옵니다. 이후 이를 steps.current-time.outputs.formattedTime로 사용합니다.  
+     ## 이미지 태그에 시간 설정을 하기위해서 현재 시간(current-time)을 가져옵니다. 이후 이를 steps.current-time.outputs.formattedTime로 사용합니다.
       - name: Get current time
         uses: 1466587594/get-current-time@v2
         id: current-time
