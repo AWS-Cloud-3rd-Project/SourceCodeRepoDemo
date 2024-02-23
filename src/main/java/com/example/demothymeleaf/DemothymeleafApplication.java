@@ -1,13 +1,13 @@
-package com.example.awsmarket;
+package com.example.demothymeleaf;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AwsmarketApplication {
+public class DemothymeleafApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AwsmarketApplication.class, args);
+		SpringApplication.run(DemothymeleafApplication.class, args);
 	}
 
 }

@@ -1,10 +1,10 @@
-package com.example.awsmarket;
+package com.example.demothymeleaf;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class AwsmarketApplicationTests {
+class DemothymeleafApplicationTests {
 
 	@Test
 	void contextLoads() {
