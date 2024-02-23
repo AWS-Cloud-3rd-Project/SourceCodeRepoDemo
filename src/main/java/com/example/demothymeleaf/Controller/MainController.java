@@ -23,7 +23,9 @@ public class MainController {
     }
 
     @GetMapping("/")
-    public String hello(){
+    public String hello(Model model){
+        List<Test> testList = testService.findall();
+        model.addAttribute("testList",testList);
         return "hello";
     }
 
